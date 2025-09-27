@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calendar, Clock, Video, MapPin, Phone, Shield, CheckCircle } from "lucide-react";
+import { Calendar, Clock, Video, MapPin, Phone, Shield, CheckCircle, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 
 interface Counselor {
@@ -27,7 +30,7 @@ interface TimeSlot {
 
 const BookingSystem = () => {
   const [selectedCounselor, setSelectedCounselor] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [sessionType, setSessionType] = useState<string>("");
   const [reason, setReason] = useState<string>("");
@@ -90,13 +93,13 @@ const BookingSystem = () => {
       description: "You'll receive a confirmation email shortly. The counselor will contact you 15 minutes before your session.",
     });
     
-    // Reset form
-    setStep(1);
-    setSelectedCounselor("");
-    setSelectedDate("");
-    setSelectedTime("");
-    setSessionType("");
-    setReason("");
+  // Reset form
+  setStep(1);
+  setSelectedCounselor("");
+  setSelectedDate(undefined);
+  setSelectedTime("");
+  setSessionType("");
+  setReason("");
   };
 
   const getSessionIcon = (type: string) => {
@@ -216,28 +219,34 @@ const BookingSystem = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
-                  <Calendar className="mr-2 h-5 w-5" />
+                  <CalendarDays className="mr-2 h-5 w-5" />
                   Select Date
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <Select value={selectedDate} onValueChange={setSelectedDate}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose a date" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {availableDates.map((date) => (
-                      <SelectItem key={date} value={date}>
-                        {new Date(date).toLocaleDateString('en-US', { 
-                          weekday: 'long', 
-                          year: 'numeric', 
-                          month: 'long', 
-                          day: 'numeric' 
-                        })}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start text-left font-normal"
+                    >
+                      <CalendarDays className="mr-2 h-4 w-4" />
+                      {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <CalendarComponent
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={setSelectedDate}
+                      disabled={(date) =>
+                        date < new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
+                      className="pointer-events-auto"
+                    />
+                  </PopoverContent>
+                </Popover>
               </CardContent>
             </Card>
 
@@ -361,7 +370,7 @@ const BookingSystem = () => {
               <div className="flex justify-between">
                 <span>Date:</span>
                 <span className="font-medium">
-                  {selectedDate ? new Date(selectedDate).toLocaleDateString() : ''}
+                  {selectedDate ? format(selectedDate, "PPP") : ''}
                 </span>
               </div>
               <div className="flex justify-between">

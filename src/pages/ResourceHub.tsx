@@ -252,7 +252,10 @@ const ResourceHub = () => {
                     ))}
                   </div>
                   
-                  <Button className="w-full">
+                  <Button className="w-full" onClick={() => {
+                    // Mock resource access - replace with actual functionality
+                    window.open('https://example.com/resource', '_blank');
+                  }}>
                     <Play className="mr-2 h-4 w-4" />
                     Access Resource
                   </Button>
@@ -311,7 +314,10 @@ const ResourceHub = () => {
                     ))}
                   </div>
                   
-                  <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground">
+                  <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground" onClick={() => {
+                    // Mock resource access - replace with actual functionality
+                    window.open('https://example.com/resource', '_blank');
+                  }}>
                     <Play className="mr-2 h-4 w-4" />
                     Access Resource
                   </Button>

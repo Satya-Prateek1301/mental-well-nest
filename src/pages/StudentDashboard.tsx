@@ -1,13 +1,21 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Brain, Calendar, BookOpen, Users, MessageCircle, Activity, TrendingUp, Heart } from "lucide-react";
+import { Brain, Calendar, BookOpen, Users, MessageCircle, Activity, TrendingUp, Heart, BarChart3, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import MoodCheckDialog from "@/components/MoodCheckDialog";
+import { useToast } from "@/hooks/use-toast";
 
 const StudentDashboard = () => {
+  const [showMoodCheck, setShowMoodCheck] = useState(false);
+  const [moodScore, setMoodScore] = useState(75);
+  const [weeklyStreak, setWeeklyStreak] = useState(5);
+  const [supportLevel, setSupportLevel] = useState("Active Support");
+  const { toast } = useToast();
+
   // Mock data - replace with real data when backend is connected
-  const moodScore = 75;
   const weeklyGoals = [
     { task: "Daily meditation", progress: 85, completed: 6, total: 7 },
     { task: "Sleep 8 hours", progress: 71, completed: 5, total: 7 },
@@ -64,7 +72,7 @@ const StudentDashboard = () => {
             <h1 className="text-3xl font-bold text-foreground">Welcome back, John!</h1>
             <p className="text-muted-foreground">How are you feeling today?</p>
           </div>
-          <Button className="btn-hero">
+          <Button className="btn-hero" onClick={() => setShowMoodCheck(true)}>
             <Activity className="mr-2 h-4 w-4" />
             Quick Mood Check
           </Button>
@@ -73,7 +81,13 @@ const StudentDashboard = () => {
 
       {/* Mood & Wellness Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="card-gradient">
+        <Card className="card-gradient cursor-pointer hover:shadow-medium transition-all duration-200" 
+              onClick={() => {
+                toast({
+                  title: "Mood Details",
+                  description: `Your current mood score is ${moodScore}/100. This is based on your recent check-ins and activity.`
+                });
+              }}>
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center">
               <Heart className="mr-2 h-5 w-5 text-primary" />
@@ -91,7 +105,13 @@ const StudentDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="card-gradient">
+        <Card className="card-gradient cursor-pointer hover:shadow-medium transition-all duration-200"
+              onClick={() => {
+                toast({
+                  title: "Weekly Streak",
+                  description: `Amazing! You've maintained your wellness routine for ${weeklyStreak} consecutive days. Keep it up!`
+                });
+              }}>
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center">
               <TrendingUp className="mr-2 h-5 w-5 text-secondary" />
@@ -99,14 +119,20 @@ const StudentDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-secondary mb-2">5 days</div>
+            <div className="text-2xl font-bold text-secondary mb-2">{weeklyStreak} days</div>
             <p className="text-sm text-muted-foreground">
               You've been consistent with your wellness routine
             </p>
           </CardContent>
         </Card>
 
-        <Card className="card-gradient">
+        <Card className="card-gradient cursor-pointer hover:shadow-medium transition-all duration-200"
+              onClick={() => {
+                toast({
+                  title: "Support Network",
+                  description: "Your support level is strong. You have access to counselors, peer support, and AI assistance 24/7."
+                });
+              }}>
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center">
               <MessageCircle className="mr-2 h-5 w-5 text-accent" />
@@ -114,7 +140,7 @@ const StudentDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Badge variant="secondary" className="mb-2">Active Support</Badge>
+            <Badge variant="secondary" className="mb-2">{supportLevel}</Badge>
             <p className="text-sm text-muted-foreground">
               Your support network is strong
             </p>

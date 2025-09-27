@@ -9,13 +9,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import NotificationPanel from "@/components/NotificationPanel";
+import { useAuth } from "@/hooks/useAuth";
 import mindmitraLogo from "@/assets/mindmitra-logo.png";
 
 const Header = () => {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
-    // Add logout logic here when backend is connected
+    logout();
     navigate("/");
   };
 
@@ -35,19 +38,19 @@ const Header = () => {
           {/* Right side actions */}
           <div className="flex items-center space-x-4">
             {/* Notifications */}
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-5 w-5" />
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs bg-destructive">
-                3
-              </Badge>
-            </Button>
+            <NotificationPanel />
 
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center space-x-2">
                   <User className="h-5 w-5" />
-                  <span className="hidden sm:inline">John Doe</span>
+                  <span className="hidden sm:inline">{user?.name || "User"}</span>
+                  {user?.role && (
+                    <Badge variant="outline" className="ml-1 text-xs">
+                      {user.role}
+                    </Badge>
+                  )}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">

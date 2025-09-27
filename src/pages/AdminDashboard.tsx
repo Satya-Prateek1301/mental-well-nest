@@ -38,6 +38,12 @@ interface AlertData {
 }
 
 const AdminDashboard = () => {
+  const { user } = useAuth();
+  
+  // Redirect if not admin
+  if (!user || user.role !== 'admin') {
+    return <Navigate to="/dashboard" replace />;
+  }
   const [timeRange, setTimeRange] = useState("week");
   const [selectedDepartment, setSelectedDepartment] = useState("all");
 

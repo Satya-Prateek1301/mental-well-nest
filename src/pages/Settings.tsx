@@ -10,8 +10,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
+import { useTheme } from "@/hooks/useTheme";
 
 const Settings = () => {
+  const { theme, setTheme } = useTheme();
   const [profile, setProfile] = useState({
     fullName: "John Doe",
     email: "john.doe@university.edu",
